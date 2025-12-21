@@ -1,7 +1,7 @@
 import json
 from sentence_transformers import SentenceTransformer
 
-INPUT_FILE = "chunks.json"
+INPUT_FILE = "data\chunks\chunks.json"
 OUTPUT_FILE = "chunks_embeddings.json"
 
 model = SentenceTransformer("BAAI/bge-large-en-v1.5")
