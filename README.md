@@ -43,7 +43,7 @@ college-chatbot/
 
 ## Setup Instructions
 1️⃣ Clone the repository  
-git clone https://github.com/<username>/college-chatbot.git  
+git clone https://github.com/sanjana861/college-chatbot.git  
 cd college-chatbot  
 
 2️⃣ Create virtual environment  
