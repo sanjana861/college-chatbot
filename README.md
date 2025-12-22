@@ -66,15 +66,16 @@ Text chunks → data/chunks/
 
 Vector embeddings → data/embeddings/
 
-## Team
-**Name**	           &ensp;    **Role**  
-**Sanjana**          &ensp; -    Chunking & Tokenization  
-**Subhash Chandra**	 &ensp; -    Embeddings & SQL DB  
-**Sathish**	         &ensp; -    Vector DB  
-**Vijay Kiran** 	   &ensp; -    RAG  
-**Mokshagna**        &ensp; -    LLM Integration  
-**Vishnuvardhan**	   &ensp; -    Prompt Construction  
-**Praneetha**	       &ensp; -    Fine Tuning  
+## Team Roles & Responsibilities
+
+Sanjana           : Chunking & Tokenization  
+Subhash Chandra   : Embeddings & SQL Database  
+Sathish           : Vector Database  
+Vijay Kiran       : Retrieval-Augmented Generation (RAG)  
+Mokshagna         : LLM Integration  
+Vishnuvardhan     : Prompt Construction  
+Praneetha         : Fine-Tuning  
+
 
 ## Documentation
 
