@@ -1,101 +1,99 @@
-# College Chatbot RAG System
-
-This document provides a detailed overview of the Retrieval-Augmented Generation (RAG) system implemented in this project. The goal of this system is to create a conversational AI that can answer user questions about a college accurately and contextually.
-
+# AI Powered Conversational Chatbot for College Website Navigation and Student Assistance
 ## Overview
 
-In the domain of college-related inquiries, students, parents, and staff often have a wide range of questions, from admission procedures and fee structures to campus life and course details. A traditional chatbot might struggle to provide accurate and up-to-date information. This RAG system addresses this challenge by combining the power of a pre-trained language model with an external knowledge base.
+This project is a College Chatbot designed to answer queries related to college information such as departments, faculty, students, placements, and FAQs.
+It uses Retrieval-Augmented Generation (RAG) to provide accurate, context-aware responses based on stored college data.
 
-The system is designed to be:
-*   **Accurate:** By retrieving information from a curated knowledge base, the system can provide answers based on factual data.
-*   **Contextual:** The system can understand the nuances of user queries and provide relevant answers.
-*   **Extensible:** The knowledge base can be easily updated with new information, ensuring the chatbot stays current.
+## Key Features
 
-## RAG Pipeline
+College information Q&A
 
-The RAG system follows a three-stage pipeline to generate answers:
+Student & faculty data retrieval
 
-### 1. Retrieval
+Placement-related queries
 
-The first stage is to find the most relevant information from the knowledge base. The knowledge base in this project is a collection of text chunks and FAQs stored in `app/database/vectordb/unified_vectors.json`.
+Semantic search using embeddings
 
-*   **Embedding:** Although the `unified_vectors.json` file contains pre-computed embeddings, they were generated with a different model. To ensure consistency, the text data is loaded and the embeddings are re-generated in memory using the `all-MiniLM-L6-v2` sentence-transformer model upon initialization of the `RAGSystem`. These embeddings capture the semantic meaning of the text.
-*   **Indexing:** The newly generated embeddings are stored in a FAISS index, which is a highly efficient library for similarity search.
-*   **Searching:** When a user asks a question, the query is also embedded using the same `all-MiniLM-L6-v2` model. The FAISS index is then used to find the most similar document embeddings to the query embedding, using the L2 distance metric. This process is known as a dense vector search.
+Modular and scalable project structure
 
-### 2. Reranking
+## Tech Stack
 
-The initial retrieval stage is optimized for speed and may not always return the most relevant documents at the top. The reranking stage refines the search results.
+**Programming Language :** Python
 
-*   **Cross-Encoder:** A cross-encoder model (`cross-encoder/ms-marco-MiniLM-L-6-v2`) is used to get a more accurate relevance score. Unlike the sentence-transformer, which embeds the query and documents independently, the cross-encoder takes both the query and a document as input simultaneously, allowing it to better model their interaction.
-*   **Sorting:** The documents are then sorted based on the scores from the cross-encoder, with the most relevant documents moving to the top.
+**Backend:** FastAPI 
 
-### 3. Generation
+**Vector Database:** ChromaDB
 
-The final stage is to generate a human-like answer based on the retrieved and reranked documents.
+**Embeddings:** Sentence Transformers - BAAI/bge-large-en-v1.5
 
-*   **Language Model:** A pre-trained T5 model (`google/flan-t5-base`) is used for this task. T5 (Text-to-Text Transfer Transformer) is a versatile model that can be fine-tuned for a variety of NLP tasks, including question answering.
-*   **Contextual Answer:** The query and the top-ranked documents are combined into a prompt that is fed to the T5 model. The model then generates an answer based on the provided context.
+**LLM:** Gemma 3 1b
 
-## Decoding Strategy
+## Project Structure
+college-chatbot/
+│
+├── app/              # Core backend logic
+├── data/             # Datasets, embeddings, chunks
+├── scripts/          # Utility & processing scripts
+├── docs/             # Detailed documentation
+├── static/           # Frontend / UI files 
+│
+├── requirements.txt
+├── README.md
+└── .gitignore
 
-To control the creativity and factuality of the generated answer, a hybrid decoding strategy is used:
+## Setup Instructions
+1️⃣ Clone the repository
+git clone https://github.com/<username>/college-chatbot.git
+cd college-chatbot
 
-*   **High Temperature (e.g., 0.7):** A temperature greater than 0 and less than 1 encourages the model to generate more diverse and less predictable text. This can make the answers sound more natural.
-*   **Top-K Sampling (e.g., k=50):** This method restricts the model's vocabulary to the top `k` most likely next words. This helps to avoid generating nonsensical words.
-*   **Top-P Sampling (e.g., p=0.9):** Also known as nucleus sampling, this method selects the next word from a vocabulary of the most probable words whose cumulative probability is greater than or equal to `p`. This is a more dynamic approach than top-k sampling and can lead to more creative answers.
+2️⃣ Create virtual environment
+python -m venv venv
+source venv/bin/activate   # Windows: venv\Scripts\activate
 
-By combining these three techniques, we can generate answers that are both creative and grounded in the retrieved context.
+3️⃣ Install dependencies
+pip install -r requirements.txt
 
-## Technologies Used
+4️⃣ Run the application
+python app/main.py
 
-The RAG system is built using the following open-source libraries and models:
+## Data Handling
 
-*   **`sentence-transformers`:** A Python framework for state-of-the-art sentence, text, and image embeddings.
-    *   **`all-MiniLM-L6-v2`:** A fast and high-quality model for generating sentence embeddings.
-    *   **`cross-encoder/ms-marco-MiniLM-L-6-v2`:** A cross-encoder model fine-tuned on the MS MARCO dataset, which is a large-scale dataset for machine reading comprehension.
-*   **`faiss-cpu`:** A library developed by Facebook AI for efficient similarity search and clustering of dense vectors. The CPU version is used for broad compatibility.
-*   **`transformers`:** A library by Hugging Face that provides thousands of pre-trained models for a wide range of NLP tasks.
-    *   **`google/flan-t5-base`:** A T5 model that has been fine-tuned on a large collection of datasets, making it a powerful tool for a variety of NLP tasks.
-*   **`torch`:** A popular open-source machine learning library.
-*   **`accelerate`:** A library by Hugging Face that simplifies running PyTorch models on any kind of distributed setup.
-*   **`numpy`:** A fundamental package for scientific computing with Python.
-*   **`sentencepiece`:** A library for unsupervised text tokenization and detokenization.
+Raw scraped data → data/scraped_data/
 
-## Code Structure (`app/services/rag_services.py`)
+Cleaned datasets → data/datasets/
 
-The entire RAG pipeline is encapsulated in the `RAGSystem` class in `app/services/rag_services.py`.
+Text chunks → data/chunks/
 
-*   **`__init__(self, ...)`:**
-    *   Loads the text chunks from the JSON file.
-    *   Initializes the `SentenceTransformer` for embedding, the `CrossEncoder` for reranking, and the `T5Tokenizer` and `T5ForConditionalGeneration` for the generative part.
-    *   Encodes all the text chunks and builds the FAISS index.
-*   **`search(self, query, k=5)`:**
-    *   Takes a user query as input.
-    *   Encodes the query to a vector.
-    *   Performs a similarity search on the FAISS index to retrieve the top `k` most similar documents.
-*   **`rerank(self, query, documents)`:**
-    *   Takes the user query and the retrieved documents as input.
-    *   Uses the cross-encoder to calculate a relevance score for each query-document pair.
-    *   Returns the documents sorted by their relevance scores.
-*   **`generate(self, query, documents, ...)`:**
-    *   Takes the user query and the reranked documents as input.
-    *   Constructs a prompt by combining the query and the context from the documents.
-    *   Uses the T5 model to generate an answer based on the prompt.
-    *   The generation process is controlled by the `temperature`, `top_k`, and `top_p` parameters.
-*   **`__call__(self, query)`:**
-    *   The main entry point for the RAG system.
-    *   It takes a user query and orchestrates the entire search-rerank-generate pipeline.
-    *   Returns the final generated answer.
+Vector embeddings → data/embeddings/
 
-## How to Run
+## Team
+### Name	               Role
+Sanjana	            Chunking & Tokenization
+Subhash Chandra	   Embeddings & SQL DB
+Sathish	            Vector DB
+Vijay Kiran 	      RAG
+Mokshagna            LLM Integration
+Vishnuvardhan	      Prompt Construction
+Praneetha	         Fine Tuning
 
-1.  **Set up the environment:**
-    *   Create a virtual environment: `python -m venv venv`
-    *   Activate the virtual environment: `venv\Scripts\activate`
+## Documentation
 
-2.  **Install dependencies:**
-    *   Install all the required packages from `requirements.txt`: `pip install -r requirements.txt`
+Detailed documentation is available in the docs/ folder:
 
-3.  **Run the RAG system:**
-    *   Execute the `rag_services.py` script: `python app/services/rag_services.py`
+architecture.md – System design
+
+rag_pipeline.md – RAG workflow
+
+data.md – Dataset details
+
+## Notes
+
+Do not push venv/ or .env files
+
+Use branches for team collaboration
+
+Create pull requests for merging
+
+## License
+
+This project is developed for academic purposes.
