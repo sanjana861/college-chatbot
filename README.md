@@ -28,32 +28,32 @@ Modular and scalable project structure
 
 **LLM:** Gemma 3 1b
 
-## Project Structure
-college-chatbot/
-│
-├── app/              # Core backend logic
-├── data/             # Datasets, embeddings, chunks
-├── scripts/          # Utility & processing scripts
-├── docs/             # Detailed documentation
-├── static/           # Frontend / UI files 
+## Project Structure  
+college-chatbot/  
+│  
+├── app/              # Core backend logic  
+├── data/             # Datasets, embeddings, chunks  
+├── scripts/          # Utility & processing scripts  
+├── docs/             # Detailed documentation  
+├── static/           # Frontend / UI files   
 │
 ├── requirements.txt
 ├── README.md
 └── .gitignore
 
 ## Setup Instructions
-1️⃣ Clone the repository
-git clone https://github.com/<username>/college-chatbot.git
-cd college-chatbot
+1️⃣ Clone the repository  
+git clone https://github.com/<username>/college-chatbot.git  
+cd college-chatbot  
 
-2️⃣ Create virtual environment
-python -m venv venv
-source venv/bin/activate   # Windows: venv\Scripts\activate
+2️⃣ Create virtual environment  
+python -m venv venv  
+source venv/bin/activate   # Windows: venv\Scripts\activate  
 
-3️⃣ Install dependencies
+3️⃣ Install dependencies  
 pip install -r requirements.txt
 
-4️⃣ Run the application
+4️⃣ Run the application  
 python app/main.py
 
 ## Data Handling
