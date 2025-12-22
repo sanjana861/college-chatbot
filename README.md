@@ -67,14 +67,14 @@ Text chunks → data/chunks/
 Vector embeddings → data/embeddings/
 
 ## Team
-### Name	               Role
-Sanjana	              Chunking & Tokenization
-Subhash Chandra	      Embeddings & SQL DB
-Sathish	              Vector DB
-Vijay Kiran 	        RAG
-Mokshagna             LLM Integration
-Vishnuvardhan	        Prompt Construction
-Praneetha	            Fine Tuning
+**Name**	               **Role**
+**Sanjana**               Chunking & Tokenization  
+**Subhash Chandra**	      Embeddings & SQL DB  
+**Sathish**	              Vector DB  
+**Vijay Kiran** 	        RAG  
+**Mokshagna**             LLM Integration  
+**Vishnuvardhan**	        Prompt Construction  
+**Praneetha**	            Fine Tuning  
 
 ## Documentation
 
