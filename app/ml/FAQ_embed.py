@@ -12,7 +12,7 @@ model = SentenceTransformer("BAAI/bge-large-en-v1.5")
 # ---------------------------
 # 2. Load FAQ JSON file
 # ---------------------------
-file_path = ""  # <-- your file path here
+file_path = "data\datasets\faq_rows.json"
 
 print("🔹 Loading FAQ JSON...")
 with open(file_path, "r", encoding="utf-8") as f:
