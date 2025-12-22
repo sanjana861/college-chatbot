@@ -36,10 +36,10 @@ college-chatbot/
 ├── scripts/          # Utility & processing scripts  
 ├── docs/             # Detailed documentation  
 ├── static/           # Frontend / UI files   
-│
-├── requirements.txt
-├── README.md
-└── .gitignore
+│  
+├── requirements.txt  
+├── README.md  
+└── .gitignore  
 
 ## Setup Instructions
 1️⃣ Clone the repository  
@@ -68,23 +68,24 @@ Vector embeddings → data/embeddings/
 
 ## Team
 ### Name	               Role
-Sanjana	            Chunking & Tokenization
-Subhash Chandra	   Embeddings & SQL DB
-Sathish	            Vector DB
-Vijay Kiran 	      RAG
-Mokshagna            LLM Integration
-Vishnuvardhan	      Prompt Construction
-Praneetha	         Fine Tuning
+Sanjana	              Chunking & Tokenization
+Subhash Chandra	      Embeddings & SQL DB
+Sathish	              Vector DB
+Vijay Kiran 	        RAG
+Mokshagna             LLM Integration
+Vishnuvardhan	        Prompt Construction
+Praneetha	            Fine Tuning
 
 ## Documentation
 
 Detailed documentation is available in the docs/ folder:
 
-architecture.md – System design
+chunking.md – Chunking details
 
-rag_pipeline.md – RAG workflow
+embeddings.md – Embeddings details
 
-data.md – Dataset details
+rag.md – Rag Wrokflow
+
 
 ## Notes
 
