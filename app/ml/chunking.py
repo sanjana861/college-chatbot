@@ -1,7 +1,7 @@
 import json
 
 INPUT_FILE = "webdata.json"
-OUTPUT_FILE = "chunks.json"
+OUTPUT_FILE = "data/chunks/chunks.json"
 
 CHUNK_SIZE = 500
 OVERLAP = 100
