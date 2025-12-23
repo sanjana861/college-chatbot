@@ -1,6 +1,6 @@
 import json
 
-INPUT_FILE = "webdata_clean.json"
+INPUT_FILE = "webdata.json"
 OUTPUT_FILE = "chunks.json"
 
 CHUNK_SIZE = 500
