@@ -1,6 +1,6 @@
 import json
 
-INPUT_FILE = "webdata.json"
+INPUT_FILE = "data/scraped_data/webdata.json"
 OUTPUT_FILE = "data/chunks/chunks.json"
 
 CHUNK_SIZE = 500
