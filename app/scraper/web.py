@@ -5,9 +5,7 @@ import json
 import os
 import urllib3
 
-# -----------------------------
-# CONFIG
-# -----------------------------
+
 BASE_URL = "https://tkrcet.ac.in/"
 DOMAIN = "tkrcet.ac.in"
 
@@ -31,9 +29,7 @@ os.makedirs(OUTPUT_DIR, exist_ok=True)
 visited = set()
 site_data = {}
 
-# -----------------------------
-# HELPERS
-# -----------------------------
+
 def normalize_url(url):
     url = url.split("#")[0]
     if url.endswith("/"):
@@ -59,12 +55,10 @@ def fetch(url):
         if res.status_code == 200:
             return res.text
     except Exception as e:
-        print(f"❌ Fetch failed: {url}")
+        print(f" Fetch failed: {url}")
     return None
 
-# -----------------------------
-# STRUCTURED EXTRACTION
-# -----------------------------
+
 def extract_page(url, html):
     soup = BeautifulSoup(html, "html.parser")
 
@@ -122,9 +116,7 @@ def extract_page(url, html):
 
     site_data[url] = page
 
-# -----------------------------
-# CRAWLER
-# -----------------------------
+
 def crawl(url, depth=0):
     if depth > MAX_DEPTH or len(visited) >= MAX_PAGES:
         return
@@ -134,7 +126,7 @@ def crawl(url, depth=0):
         return
 
     visited.add(url)
-    print(f"🔹 Crawling: {url}")
+    print(f" Crawling: {url}")
 
     html = fetch(url)
     if not html:
@@ -148,19 +140,15 @@ def crawl(url, depth=0):
         if is_internal(next_url):
             crawl(next_url, depth + 1)
 
-# -----------------------------
-# RUN
-# -----------------------------
-print("🚀 Starting structured crawl...")
+
+print(" Starting structured crawl...")
 crawl(BASE_URL)
 
-# -----------------------------
-# SAVE
-# -----------------------------
-output_path = os.path.join(OUTPUT_DIR, "webdata.json")
+
+output_path = os.path.join(OUTPUT_DIR, "data/scraped_data/webdata.json")
 with open(output_path, "w", encoding="utf-8") as f:
     json.dump(site_data, f, indent=2, ensure_ascii=False)
 
-print("\n✅ FILE CREATED SUCCESSFULLY")
-print(f"📄 File location: {output_path}")
-print(f"📊 Pages structured: {len(site_data)}")
+print("\n FILE CREATED SUCCESSFULLY")
+print(f" File location: {output_path}")
+print(f"Pages structured: {len(site_data)}")
