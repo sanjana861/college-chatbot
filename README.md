@@ -68,13 +68,13 @@ Vector embeddings → data/embeddings/
 
 ## Team Roles & Responsibilities
 
-Sanjana           : Chunking & Tokenization  
-Subhash Chandra   : Embeddings & SQL Database  
-Sathish           : Vector Database  
-Vijay Kiran       : Retrieval-Augmented Generation (RAG)  
-Mokshagna         : LLM Integration  
-Vishnuvardhan     : Prompt Construction  
-Praneetha         : Fine-Tuning  
+**Sanjana**           : Chunking & Tokenization  
+**Subhash Chandra**   : Embeddings & SQL Database  
+**Sathish**           : Vector Database  
+**Vijay Kiran**       : Retrieval-Augmented Generation (RAG)  
+**Mokshagna**         : LLM Integration  
+**Vishnuvardhan**     : Prompt Construction  
+**Praneetha**         : Fine-Tuning  
 
 
 ## Documentation
