@@ -1,129 +1,71 @@
-import os
-from huggingface_hub import hf_hub_download
-from llama_cpp import Llama
+import ollama
+import chromadb
 
+# --- Configuration ---
+CHROMA_PATH = "chroma_db"  # Path to your existing database
+COLLECTION_NAME = "college_data"
 
-# ==================================================
-# PROMPT CONSTRUCTION (FINAL, AUTHORITATIVE)
-# ==================================================
-def construct_prompt(user_query, rag_system, user_role="student"):
+def get_context_from_db(query):
     """
-    Builds the final prompt using the RAG system and strict rules.
-    Assumes RAG search + rerank are already implemented and correct.
+    Connects to your existing ChromaDB and retrieves relevant documents.
     """
+    client = chromadb.PersistentClient(path=CHROMA_PATH)
+    collection = client.get_collection(name=COLLECTION_NAME)
+    
+    # Retrieve top 5 matches
+    results = collection.query(
+        query_texts=[query],
+        n_results=5
+    )
+    
+    # Combine retrieved documents into a single string
+    context = "\n".join(results['documents'][0])
+    return context
 
-    # --- Retrieve context via RAG ---
-    retrieved_docs = rag_system.search(user_query, k=5)
-    reranked_docs = rag_system.rerank(user_query, retrieved_docs)
+def generate_college_response(user_query, user_role="student"):
+    """
+    Combines retrieval and LLM generation.
+    """
+    # 1. Retrieve context
+    context = get_context_from_db(user_query)
 
-    if not reranked_docs:
-        context_text = "No relevant college information found."
-    else:
-        context_text = "\n".join(f"- {doc['text']}" for doc in reranked_docs)
-
-    # --- System instructions ---
+    # 2. Define System Instructions
     system_instructions = """
-You are an AI-powered College Assistant Chatbot.
+    You are an AI-powered College Assistant Chatbot.
+    RULES:
+    1. Only answer college-related questions.
+    2. If the query is unrelated, say: "I can assist only with college-related queries."
+    3. Use ONLY the retrieved context provided. Do NOT guess.
+    4. If information is missing, say: "This information is currently not available. Please contact the college admin."
+    5. Mention portals (ERP, Library, etc.) when relevant.
+    """
 
-ROLE:
-- Assist only with college-related queries.
-- Be polite, professional, and concise.
+    # 3. Construct the User Prompt
+    prompt = f"""
+    Context:
+    {context}
 
-STRICT RULES:
-1. Answer ONLY college-related questions.
-2. Use ONLY the retrieved knowledge base below.
-3. Do NOT guess or hallucinate.
-4. If the answer is missing, say:
-   "This information is currently not available in the system. Please contact the college admin department for accurate details."
-5. For greetings, respond politely and ask how you can help.
-6. Mention relevant college portals when applicable.
-"""
+    User Type: {user_role}
+    User Query: "{user_query}"
 
-    # --- Final prompt ---
-    final_prompt = f"""
-{system_instructions}
+    Answer:
+    """
 
-RETRIEVED KNOWLEDGE BASE:
-{context_text}
+    # 4. Get response from Ollama
+    response = ollama.generate(
+        model='llama3.2:1b',
+        system=system_instructions,
+        prompt=prompt,
+        options={
+            'temperature': 0.3,
+            'num_ctx': 4096
+        }
+    )
+    return response['response']
 
-USER ROLE:
-{user_role}
-
-USER QUERY:
-{user_query}
-
-FINAL ANSWER:
-"""
-
-    return final_prompt.strip()
-
-
-# ==================================================
-# LLM IMPLEMENTATION (CLEAN & SAFE)
-# ==================================================
-class CollegeBotLLM:
-    def __init__(self):
-        # Download small, stable GGUF model (CPU-safe)
-        model_path = hf_hub_download(
-            repo_id="microsoft/Phi-3-mini-4k-instruct-gguf",
-            filename="Phi-3-mini-4k-instruct-q4.gguf"
-        )
-
-        # Initialize LLM
-        self.llm = Llama(
-            model_path=model_path,
-            n_ctx=2048,
-            n_threads=4,
-            verbose=False
-        )
-
-    def generate_response(self, user_query, rag_system, user_role="student"):
-        """
-        Complete LLM responsibility:
-        - Prompt construction
-        - Decoding
-        - Response generation
-        """
-
-        prompt = construct_prompt(
-            user_query=user_query,
-            rag_system=rag_system,
-            user_role=user_role
-        )
-
-        output = self.llm(
-            prompt,
-            max_tokens=256,
-            temperature=0.2,
-            top_p=0.9,
-            top_k=40,
-            stop=["USER QUERY:", "RETRIEVED KNOWLEDGE BASE:"]
-        )
-
-        return output["choices"][0]["text"].strip()
-
-
-# ==================================================
-# MINIMAL TEST (WILL RUN WITHOUT ERRORS)
-# ==================================================
+# --- Execution ---
 if __name__ == "__main__":
-
-    # Dummy RAG for validation (replace with your real RAG)
-    class DummyRAG:
-        def search(self, query, k=5):
-            return [
-                {"text": "The Head of the Computer Science department is Dr. Smith."},
-                {"text": "CS department office hours are from 10 AM to 12 PM."}
-            ]
-
-        def rerank(self, query, docs):
-            return docs
-
-    rag_system = DummyRAG()
-    bot = CollegeBotLLM()
-
-    query = "Who is the HOD of CS and when can I meet him?"
-    response = bot.generate_response(query, rag_system)
-
-    print("\nBot Response:\n")
-    print(response)
+    query = "How do I access the ERP portal for exam results?"
+    print(f"Query: {query}")
+    print("-" * 30)
+    print(f"Chatbot: {generate_college_response(query)}")
