@@ -1,0 +1,12 @@
+fastapi
+uvicorn
+pandas
+openpyxl
+sqlite-utils
+sentence-transformers
+chromadb
+torch
+transformers
+numpy
+scikit-learn
+requests

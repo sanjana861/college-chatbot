@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>College Chatbot</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f4f8;
+        }
+        .message-bubble {
+            border-radius: 1rem;
+            padding: 0.75rem 1rem;
+            max-width: 80%;
+            white-space: pre-wrap;
+        }
+    </style>
+</head>
+
+<body class="flex items-center justify-center h-screen bg-gray-100 p-4">
+
+<!-- Status Message -->
+<div id="status-message"
+     class="absolute top-4 left-1/2 -translate-x-1/2 bg-yellow-400 text-gray-800 text-sm px-4 py-2 rounded-lg shadow-md hidden">
+</div>
+
+<!-- Chat Icon -->
+<button id="chat-icon"
+        class="fixed bottom-6 right-6 bg-blue-600 text-white rounded-full w-16 h-16 flex items-center justify-center text-3xl shadow-lg">
+    💬
+</button>
+
+<!-- Chat Box -->
+<div id="chat-box"
+     class="fixed bottom-24 right-6 w-full max-w-sm h-[80vh] max-h-[500px] bg-white rounded-xl shadow-2xl flex flex-col scale-0 opacity-0 transition-all">
+
+    <!-- Header -->
+    <div class="p-4 bg-blue-600 text-white rounded-t-xl flex justify-between">
+        <h2 class="text-lg font-medium">College Chatbot</h2>
+        <button id="close-chat">✖</button>
+    </div>
+
+    <!-- Messages -->
+    <div id="messages" class="flex-1 p-4 overflow-y-auto space-y-4">
+        <div class="flex justify-start">
+            <div class="message-bubble bg-gray-200 text-gray-800">
+                Hello! Ask me about admissions or students.
+            </div>
+        </div>
+    </div>
+
+    <!-- Input -->
+    <div class="p-4 border-t flex">
+        <input id="user-input"
+               placeholder="Type your question..."
+               class="flex-1 px-4 py-2 rounded-full bg-gray-100 border focus:outline-none">
+
+        <button id="send-button"
+                class="ml-2 bg-blue-600 text-white rounded-full w-10 h-10">
+            ➤
+        </button>
+    </div>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+
+    const backendUrl = "http://127.0.0.1:8000/query";
+
+    const chatIcon = document.getElementById("chat-icon");
+    const chatBox = document.getElementById("chat-box");
+    const closeChat = document.getElementById("close-chat");
+    const messages = document.getElementById("messages");
+    const userInput = document.getElementById("user-input");
+    const sendBtn = document.getElementById("send-button");
+    const status = document.getElementById("status-message");
+
+    const showStatus = (msg) => {
+        status.textContent = msg;
+        status.classList.remove("hidden");
+        setTimeout(() => status.classList.add("hidden"), 3000);
+    };
+
+    const addMessage = (text, sender) => {
+        const wrap = document.createElement("div");
+        wrap.className = sender === "user" ? "flex justify-end" : "flex justify-start";
+
+        const bubble = document.createElement("div");
+        bubble.className = sender === "user"
+            ? "message-bubble bg-blue-500 text-white"
+            : "message-bubble bg-gray-200 text-gray-800";
+
+        bubble.textContent = text;
+        wrap.appendChild(bubble);
+        messages.appendChild(wrap);
+        messages.scrollTop = messages.scrollHeight;
+    };
+
+    const formatSQL = (rows) => {
+        if (!rows.length) return "No records found.";
+
+        return rows.map(r =>
+            `Roll No: ${r[0]}\nName: ${r[1]}\nBranch: ${r[2]}\nCGPA: ${r[3]}\n`
+        ).join("\n");
+    };
+
+    const sendMessage = async () => {
+        const text = userInput.value.trim();
+        if (!text) return;
+
+        addMessage(text, "user");
+        userInput.value = "";
+
+        try {
+            const res = await fetch(backendUrl, {
+                method: "POST",
+                headers: {"Content-Type": "application/json"},
+                body: JSON.stringify({ query: text })
+            });
+
+            const data = await response.json();
+ 
+            if (data.reply) {
+              addMessage(data.reply, 'bot');
+            } else {
+              addMessage("Unexpected server response.", 'bot');
+            }
+
+        } catch (e) {
+            addMessage("Server not reachable. Please try again.", "bot");
+            showStatus("Backend connection failed");
+        }
+    };
+
+    chatIcon.onclick = () => chatBox.classList.remove("scale-0", "opacity-0");
+    closeChat.onclick = () => chatBox.classList.add("scale-0", "opacity-0");
+    sendBtn.onclick = sendMessage;
+
+    userInput.addEventListener("keypress", e => {
+        if (e.key === "Enter") sendMessage();
+    });
+
+});
+</script>
+
+</body>
+</html>
