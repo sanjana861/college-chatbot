@@ -1,0 +1,13 @@
+# Python virtual environment
+venv/
+env/
+.venv/
+
+# Python cache
+__pycache__/
+*.pyc
+
+# Databases / generated data (optional but recommended)
+vector_db/
+embeds/
+students.db

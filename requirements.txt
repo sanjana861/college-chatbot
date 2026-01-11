@@ -1,0 +1,32 @@
+# Backend framework
+fastapi
+uvicorn
+
+# Data validation
+pydantic
+
+# Web scraping
+requests
+beautifulsoup4
+trafilatura
+
+# NLP
+nltk
+
+# Embeddings / ML
+torch
+transformers
+sentence-transformers
+
+# Vector database
+chromadb
+
+# Scheduling
+schedule
+
+# Data utilities
+numpy
+pandas
+
+# Database
+mysql-connector-python

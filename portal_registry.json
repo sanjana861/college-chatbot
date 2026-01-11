@@ -1,0 +1,65 @@
+{
+  "attendance_portal": {
+    "label": "Attendance Portal",
+    "url": "http://103.171.190.44/TKRCET/index.php",
+    "keywords": [
+      "attendance",
+      "present",
+      "absent",
+      "personal details",
+      "timetable",
+      "semester timetable",
+      "subjects",
+      "academic calendar"
+    ],
+    "capabilities": [
+      "View subject-wise attendance",
+      "View personal and profile details",
+      "Current semester timetable",
+      "Current semester subjects list",
+      "Academic calendar (current and previous)",
+      "Semester-wise subjects learned"
+    ]
+  },
+
+  "student_portal": {
+    "label": "BET Student Portal",
+    "url": "https://www.tkrcetautonomous.org/StudentLogin/MainStud.aspx",
+    "keywords": [
+      "internal marks",
+      "external marks",
+      "hall ticket",
+      "supply",
+      "supplementary",
+      "fee payment",
+      "fee receipt",
+      "exam fee"
+    ],
+    "capabilities": [
+      "View internal and external marks",
+      "Download regular and supplementary hall tickets",
+      "Pay examination fees",
+      "Download fee receipts",
+      "Student academic services"
+    ]
+  },
+
+  "exam_branch_portal": {
+    "label": "Exam Branch Portal",
+    "url": "https://tkrcetexams.com/",
+    "keywords": [
+      "exam timetable",
+      "results",
+      "credits",
+      "credits report",
+      "backlogs",
+      "regulations"
+    ],
+    "capabilities": [
+      "Exam timetables",
+      "Results and credits reports",
+      "Backlogs and regulations",
+      "Official examination notifications"
+    ]
+  }
+}
